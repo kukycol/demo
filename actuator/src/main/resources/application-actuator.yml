@@ -1,0 +1,31 @@
+#actuator
+management:
+  endpoints:
+    #false是禁用所有端点
+    enabled-by-default: true
+#  endpoint:
+#    #true启用单个端点
+#    info:
+#      enabled: true
+#    health:
+#      enabled: true
+    #开启web默认的所有端点
+    web:
+      exposure:
+        include: "*"
+      #默认的访问父路径/actuator
+      base-path: /actuator/manage
+    #开启jmx默认的所有端点
+    jmx:
+      exposure:
+        include: "*"
+  #actuator独立端口
+#  server:
+#    port: 8081
+
+#actuator info 信息
+info:
+  app:
+    name: "new admin"
+    version: "1.0.0"
+    description: "springboot + ssm + actuator"
