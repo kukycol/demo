@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>new-admin</artifactId>
+        <groupId>com.ezm</groupId>
+        <version>1.0.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>start</artifactId>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
+
+    <dependencies>
+        <!--devTools-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <!--true只允许该模块使用热部署-->
+            <optional>true</optional>
+            <!--打包时不会编译进去,只在运行时起作用-->
+            <scope>runtime</scope>
+        </dependency>
+
+        <!--actuator springboot项目监控-->
+        <dependency>
+            <groupId>${groupId}</groupId>
+            <artifactId>actuator</artifactId>
+            <version>${version}</version>
+        </dependency>
+
+        <!--swagger springboot项目接口文档-->
+        <dependency>
+            <groupId>${groupId}</groupId>
+            <artifactId>swagger</artifactId>
+            <version>${version}</version>
+        </dependency>
+
+        <!--thymeleaf 动态页面-->
+        <dependency>
+            <groupId>${groupId}</groupId>
+            <artifactId>thymeleaf</artifactId>
+            <version>${version}</version>
+        </dependency>
+
+        <!--druid + mybatis-->
+<!--        <dependency>-->
+<!--            <groupId>${groupId}</groupId>-->
+<!--            <artifactId>druid-mybatis</artifactId>-->
+<!--            <version>${version}</version>-->
+<!--        </dependency>-->
+
+        <!--redis-->
+        <dependency>
+            <groupId>${groupId}</groupId>
+            <artifactId>redis</artifactId>
+            <version>${version}</version>
+        </dependency>
+
+        <!--security-->
+        <dependency>
+            <groupId>${groupId}</groupId>
+            <artifactId>security</artifactId>
+            <version>${version}</version>
+        </dependency>
+
+
+    </dependencies>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <!--如果没有该配置，devtools不会起作用，即应用不会restart-->
+                    <fork>true</fork>
+                </configuration>
+
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

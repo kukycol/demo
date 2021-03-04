@@ -1,0 +1,28 @@
+spring:
+  #配置文件引用
+  profiles:
+    include: actuator,swagger,druid,thymeleaf,security
+    active: dev
+  #系统信息
+  application:
+    name: "new admin"
+
+---
+
+#配置开发环境
+spring:
+  profiles: dev
+server:
+  port: 80
+  servlet:
+    session:
+      timeout: 3M
+
+---
+
+#配置生产环境
+spring:
+  profiles: prod
+server:
+  port: 9000
+debug: true
