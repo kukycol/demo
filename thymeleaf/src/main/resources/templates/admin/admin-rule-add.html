@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎页面-X-admin2.2</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi"/>
+    <link rel="stylesheet" href="../../static/css/font.css">
+<!--    <link rel="stylesheet" href="../../static/css/xadmin.css">-->
+    <script src="../../static/lib/layui/layui.js" charset="utf-8"></script>
+<!--    <script type="text/javascript" src="../../static/js/xadmin.js"></script>-->
+    <link rel="stylesheet" href="../../static/lib/layui/css/layui.css">
+
+    <script type="text/javascript" src="../../static/js/vue.js"></script>
+    <script type="text/javascript" src="../../static/js/axios.min.js"></script>
+    <script type="text/javascript" src="../../static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="../../static/lib/layui/mods/layarea.js"></script>
+    <!--[if lt IE 9]>
+    <script rel="stylesheet" src="../static/js/html5.min.js" ></script>
+    <script rel="stylesheet" src="../static/js/respond.min.js" ></script>
+    <![endif]-->
+</head>
+<style>
+    .layui-fluid{
+        margin-top: 15px;
+    }
+</style>
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+
+
+            <em>基本信息</em>
+            <hr class="layui-bg-green">
+            <form class="layui-form" action="" lay-filter="rule1Form">
+
+                <div class="layui-form-item">
+
+                    <div class="layui-inline">
+                        <label class="layui-form-label">api <font color="red">*</font></label>
+                        <div class="layui-input-inline">
+
+                            <input type="tel" name="rule" lay-verify="required|rule" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-inline">
+                        <label class="layui-form-label">api名称 <font color="red">*</font></label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="ruleName" lay-verify="required|ruleName" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">启用 <font color="red">*</font></label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="enabled" value="1" title="是" checked>
+                        <input type="radio" name="enabled" value="0" title="否">
+                    </div>
+                </div>
+
+
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button type="submit" class="layui-btn" lay-submit="" lay-filter="rule1submit">提交</button>
+                    </div>
+                </div>
+
+
+            </form>
+
+
+            <hr class="layui-bg-green">
+
+        </div>
+    </div>
+</div>
+
+
+</body>
+
+
+<script>
+
+
+    layui.use(['laydate', 'form', 'table', 'jquery', 'layarea'], function () {
+        var laydate = layui.laydate,
+            form = layui.form,
+            table = layui.table,
+            $ = layui.$,
+            layarea = layui.layarea
+
+        ;
+
+
+        //初始化渲染省市区三级联动
+        layarea.render({
+            elem: '#area-picker',
+            data: {
+                province: '广东省',
+                city: '广州市',
+                county: '天河区',
+            },
+            change: function (res) {
+                //选择结果
+                console.log(res);
+            }
+        });
+
+
+        //添加按钮监听
+        form.on('submit(rule1submit)', function (data) {
+            console.log(data.elem) //被执行事件的元素DOM对象，一般为button对象
+            console.log(data.form) //被执行提交的form对象，一般在存在form标签时才会返回
+            console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
+
+            $.ajax({
+                url: '/rule/addRule',
+                type: 'post',
+                dataType: 'json',
+                contentType: "application/json;charset=utf-8",
+                data: JSON.stringify(data.field),
+                success: function (req) {
+                    console.log("addRule", req)
+                    layer.msg(req.msg);
+
+                }
+            });
+
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+
+        form.verify({
+            rule: function (value, item) { //value：表单的值、item：表单的DOM对象
+                if (!new RegExp("^[/]{1}[A-Za-z1-9]{2,30}$").test(value)) {
+                    return '由/开头、英文字母和数字组成';
+                }
+            }
+            , ruleName: function (value, item) {
+                if (!new RegExp("^[\u4e00-\u9fa5A-Za-z1-9]{2,30}$").test(value)) {
+                    return '不允许特殊符号';
+                }
+            }
+
+            //我们既支持上述函数式的方式，也支持下述数组的形式
+            //数组的两个值分别代表：[正则匹配、匹配不符时的提示文字]
+            , pass: [
+                /^[\S]{6,12}$/
+                , '密码必须6到12位，且不能出现空格'
+            ]
+        });
+
+
+
+    });
+
+
+</script>
+
+</html>

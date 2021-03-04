@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:position="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎页面-X-admin2.2</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi"/>
+    <link rel="stylesheet" href="../../static/css/font.css">
+<!--    <link rel="stylesheet" href="../../static/css/xadmin.css">-->
+    <link rel="stylesheet" href="../../static/lib/layui/css/layui.css">
+
+    <script src="../../static/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../static/js/xadmin.js"></script>
+    <script type="text/javascript" src="../../static/js/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+    <script rel="stylesheet" src="../static/js/html5.min.js" ></script>
+    <script rel="stylesheet" src="../static/js/respond.min.js" ></script>
+    <![endif]-->
+</head>
+<style>
+
+    .one {
+        width: 25%;
+        height: 500px;
+        /*border: 1px solid #ccc;*/
+        float: left;
+        box-sizing: border-box;
+
+    }
+
+    .two {
+        /*间隔5%*/
+        /*margin-left: 5%;*/
+        width: 75%;
+        height: 300px;
+        /*border: 1px solid #ccc;*/
+        float: left;
+        box-sizing: border-box;
+
+    }
+
+</style>
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+
+                <div class="layui-card-header">
+                    <div class="layui-col-md4">
+                        <i class="layui-icon layui-icon-user" style="font-size: 16px; color: #1E9FFF;"></i>
+                        菜单管理
+                    </div>
+                </div>
+                <div class="layui-card-body ">
+                    <div style="height: 500px">
+
+                        <div class="one">
+                            <div id="menu" class="demo-tree demo-tree-box"
+                                 style="width: 300px; height: 500px; overflow: scroll;">
+                            </div>
+
+
+                        </div>
+
+                        <div class="two">
+                            <table class="layui-hide" id="tableMenu" lay-filter="tableMenu"></table>
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+<!--行工具栏-->
+<!--行工具栏-->
+<script type="text/html" id="menubar">
+
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">
+        <i class="layui-icon">&#xe640;</i>删除
+    </a>
+
+</script>
+
+<script>
+    layui.use(['tree', 'util', 'jquery', 'table'], function () {
+        var tree = layui.tree,
+            $ = layui.$,
+            table = layui.table,
+            util = layui.util
+
+        ;
+
+
+        $.ajax({
+            url: '/rule/findMenuList/',
+            type: 'get',
+            dataType: '',
+            data: '',
+            success: function (req) {
+                console.log("menu",req)
+                //开启节点操作图标
+                tree.render({
+                    elem: '#menu'
+                    , data: req.data
+                    , edit: ['add', 'update'] //操作节点的图标
+                    // , showCheckbox: true //复选框
+                    , accordion: true //手风琴风格,只能打开一个菜单
+                    // , onlyIconControl: true //只允许左边图标点击打开
+                    // , isJump: true //href节点参数搭配使用，进行url跳转
+                    , text: {
+                        defaultNodeName: '新建默认节点' //新建默认节点
+                        , none: '菜单列表为空时的提示信息' //菜单列表为空时的提示信息
+                    }
+                    , click: function (obj) {
+
+                        //转换静态表格
+                        table.init('tableMenu', {
+                            data: obj.data.children,
+                            cols: [
+                                [
+                                    {field: 'id', title: 'ID'}
+                                    , {field: 'title', title: '菜单名称', edit: 'text'}
+                                    , {field: 'rule', title: '菜单地址', edit: 'text'}
+                                    , {fixed: 'right', title: '操作', unresize: true, toolbar: '#menubar'}
+
+                                ]
+                            ]
+                            ,page:true
+
+                        });
+
+                    }
+                    , operate: function (obj) {
+                        var type = obj.type; //得到操作类型：add、edit、del
+                        var data = obj.data; //得到当前节点的数据
+                        var elem = obj.elem; //得到当前节点元素
+
+                        //Ajax 操作
+                        var id = data.id; //得到节点索引
+                        if (type === 'add') { //增加节点
+                            $.ajax({
+                                url: '/rule/addMenu/' + obj.data.id,
+                                type: 'POST',
+                                dataType: '',
+                                data: '',
+                                success: function (req) {
+                                    if (req.code === 0){
+                                        location.reload();
+                                    }                                }
+                            });
+                        } else if (type === 'update') { //修改节点
+                            $.ajax({
+                                url: '/rule/updateMenuName',
+                                type: 'PUT',
+                                dataType: 'json',
+                                contentType: "application/json;charset=utf-8",
+                                data: JSON.stringify({'id': id, 'ruleName': elem.find('.layui-tree-txt').html()}),
+                                success: function (req) {
+                                    layer.msg(req.msg);
+                                }
+                            });
+                        } else if (type === 'del') { //删除节点
+
+                        };
+                    }
+                });
+
+                //转换静态表格
+                table.init('tableMenu', {
+                    data: req.data,
+                    cols: [
+                        [
+                            {field: 'id', title: 'ID'}
+                            , {field: 'title', title: '菜单名称', edit: 'text'}
+                            , {field: 'rule', title: '菜单地址', edit: 'text'}
+                            , {fixed: 'right', title: '操作', unresize: true, toolbar: '#menubar'}
+
+                        ]
+                    ]
+                    ,page:true
+
+                });
+
+            }
+        });
+
+
+        //编辑单元格
+        table.on('edit(tableMenu)', function(obj){ //注：edit是固定事件名，test是table原始容器的属性 lay-filter="对应的值"
+            console.log(obj.value); //得到修改后的值
+            console.log(obj.field); //当前编辑的字段名
+            console.log(obj.data); //所在行的所有相关数据
+
+            if (obj.field === 'title'){
+                $.ajax({
+                    url: '/rule/updateMenuName',
+                    type: 'PUT',
+                    dataType: 'json',
+                    contentType: "application/json;charset=utf-8",
+                    data: JSON.stringify({'id': obj.data.id, 'ruleName': obj.data.title}),
+                    success: function (req) {
+                        layer.msg(req.msg);
+                        if (req.code === 0){
+                            location.reload();
+                        }
+
+                    }
+                });
+            }else if (obj.field === 'rule'){
+                $.ajax({
+                    url: '/rule/updateMenuAddr',
+                    type: 'PUT',
+                    dataType: 'json',
+                    contentType: "application/json;charset=utf-8",
+                    data: JSON.stringify({'id': obj.data.id, 'rule': obj.data.rule}),
+                    success: function (req) {
+                        layer.msg(req.msg);
+
+                    }
+                });
+            }
+
+        });
+
+
+        table.on('tool(tableMenu)', function(obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+
+
+            if(layEvent === 'del'){
+                layer.confirm('真的删除行么', function(index){
+
+                    $.ajax({
+                        url: '/rule/delMenu/'+data.id,
+                        type: 'DELETE',
+                        dataType: '',
+                        data: '',
+                        success: function (req) {
+                            if (req.code === 0){
+                                obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                                layer.close(index);
+                            }
+                            location.reload();
+                        }
+                    });
+                });
+            }
+        })
+
+    });
+
+
+</script>
+
+</html>

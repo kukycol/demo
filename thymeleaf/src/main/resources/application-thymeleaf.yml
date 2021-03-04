@@ -1,0 +1,17 @@
+spring:
+#  mvc:
+#    #静态资源
+#    static-path-pattern: /static/**
+  thymeleaf:
+    #前缀
+    prefix: classpath:/templates
+    #后缀
+    suffix: .html
+    #检查是否存在该模板
+    check-template-location: true
+    #是否缓存(devtools热部署冲突所以false不开启缓存)
+    cache: false
+    #页面编码格式
+    encoding: utf-8
+    #模板
+    mode: HTML

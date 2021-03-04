@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+
+<html class="x-admin-sm" xmlns:position="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎页面-X-admin2.2</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi"/>
+
+    <link rel="stylesheet" href="../../static/css/font.css">
+    <!--    <link rel="stylesheet" href="../../static/css/xadmin.css">-->
+    <link rel="stylesheet" href="../../static/lib/layui/css/layui.css">
+    <script src="../../static/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../../static/js/xadmin.js"></script>
+    <script type="text/javascript" src="../../static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="../../static/js/judgeUtil.js"></script>
+    <!--[if lt IE 9]>
+    <script rel="stylesheet" src="../static/js/html5.min.js"></script>
+    <script rel="stylesheet" src="../static/js/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <!--头-->
+                <div class="layui-card-header">
+                    <div class="layui-col-md4">
+                        <i class="layui-icon layui-icon-username" style="font-size: 16px; color: #1E9FFF;"></i>
+                        用户管理
+                    </div>
+                </div>
+                <!--身-->
+                <div class="layui-card-body ">
+                    <!--搜索条件-->
+                    <form class="layui-form layui-col-space5">
+                        <div class="layui-inline layui-show-xs-block">
+                            <input class="layui-input" placeholder="用户名" name="uname">
+                        </div>
+                        <div class="layui-inline layui-show-xs-block">
+                            <input class="layui-input" placeholder="登录名" name="account">
+                        </div>
+                        <div class="layui-inline layui-show-xs-block">
+                            <input class="layui-input" name="mobile" placeholder="手机号码">
+                        </div>
+                        <div class="layui-inline layui-show-xs-block">
+                            <input class="layui-input" name="email" placeholder="邮箱地址">
+                        </div>
+                        <div class="layui-inline layui-show-xs-block">
+                            <button class="layui-btn" lay-submit="" lay-filter="userSreach"><i
+                                    class="layui-icon">&#xe615;</i></button>
+                        </div>
+                    </form>
+                    <!--用户列表-->
+                    <table class="layui-hide" id="user" lay-filter="user"></table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="addUser">
+            <i class="layui-icon">&#xe608;</i>
+            添加用户
+        </button>
+    </div>
+</script>
+
+<!--行工具栏-->
+<script type="text/html" id="userbarDemo">
+
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">
+        <i class="layui-icon">&#xe642;</i>编辑
+    </a>
+
+    <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="reset">密码重置</a>
+
+    {{#  if(d.enabled === '0'){ }}
+    <a class="layui-btn layui-btn-xs" lay-event="start">
+        <i class="layui-icon">&#xe652;</i>启用
+    </a>
+    {{#  } }}
+    {{#  if(d.enabled === '1'){ }}
+    <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="stop">
+        <i class="layui-icon">&#xe651;</i>停用
+    </a>
+    {{#  } }}
+
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">
+        <i class="layui-icon">&#xe640;</i>删除
+    </a>
+
+
+</script>
+</body>
+
+<script>
+
+
+    layui.use(['laydate', 'form', 'layer', 'table', 'jquery'], function () {
+        var laydate = layui.laydate,
+            form = layui.form,
+            table = layui.table,
+            $ = layui.$,
+            layer = layui.layer
+        ;
+
+
+        //表格渲染
+        table.render({
+            elem: '#user'
+            , url: '/user/findAll'
+            , title: '用户数据表'
+            , toolbar: '#toolbarDemo'
+            , defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示'
+                , layEvent: 'LAYTABLE_TIPS'
+                , icon: 'layui-icon-tips'
+            }, {
+                title: '导入'
+                , layEvent: 'INPORT_DATA'
+                , icon: 'layui-icon-file-b'
+            }]
+            , cols: [
+                [
+                    {type: 'numbers', align: 'center'}
+                    , {field: 'uname', title: '用户名', width: 100}
+                    , {field: 'account', title: '登录名', width: 120}
+                    , {field: 'mobile', title: '手机号码', width: 120}
+                    , {
+                    field: 'email', title: '邮箱地址', width: 180, templet: function (res) {
+                        return '<em>' + res.email + '</em>'
+                    }
+                }
+                    , {field: 'sex', title: '性别', sort: true, width: 80, unresize: true, align: 'center'}
+                    , {
+                    field: 'addr', title: '地址', templet: function (res) {
+                        return '<em>' + res.province + res.city + res.county + res.addr + '</em>'
+                    }
+                }
+                    , {fixed: 'right', title: '操作', unresize: false, toolbar: '#userbarDemo'}
+                ]
+            ]
+            , page: true
+            , height: 'full'
+
+        });
+
+
+        //头工具栏事件
+        table.on('toolbar(user)', function (obj) {
+            var checkStatus = table.checkStatus(obj.config.id);
+            switch (obj.event) {
+                case 'addUser':
+                    parent.layer.open({
+                        type: 2, //页面层
+                        title: '添加用户',
+                        skin: '2', //样式
+                        area: ['90%', '90%'], //宽高
+                        anim: 0, //弹出动画，0-6不同弹窗风格
+                        closeBtn: 1, //0不显示关闭，1、2两种风格
+                        isOutAnim: true, //关闭动画
+                        maxmin: true, //最大化最小化
+                        resize: false, //不允许拉伸
+                        shade: [0.8, '#393d49'], //遮罩,除弹框外的范围的背景颜色且不可点击，0是没有
+                        content: '/adminUserAdd',
+                        move: false, //是否允许拖动
+                        // moveOut: true, //是否允许拖到窗口外
+                        btnAlign: 'l' //按钮，居中、向左、向右
+                        , cancel: function () {
+                            //右上角关闭回调
+                            console.log("右上角关闭回调")
+                            table.reload('user');
+
+                            //return false 开启该代码可禁止点击该按钮关闭
+                        }
+                        , btn: ['保存', '关闭'] //可以无限个按钮
+                        , yes: function (index, layero) {
+                            //从子页面传值过来父页面
+                            var iframe = parent.window['layui-layer-iframe' + index];
+                            let data2 = iframe.child2();
+                            console.log(data2);
+
+                            if (!new RegExp("^[\u4e00-\u9fa5]{2,10}$").test(data2.uname) || checkStr(data2.uname)) {
+                                parent.layer.msg("用户名只能是汉字且只允许2-10个汉字")
+                                return false;
+                            }
+
+                            if (!new RegExp("^[A-Za-z]{2,20}$").test(data2.account) || checkStr(data2.account)) {
+                                parent.layer.msg("登录名只能由英文字母组成且只允许2-20个字母")
+                                return false;
+                            }
+
+                            if (!new RegExp("^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$").test(data2.email)) {
+                                parent.layer.msg("邮箱地址不正确！")
+                                return false;
+                            }
+
+                            if (checkStr(data2.mobile) ||
+                                !new RegExp("^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\\d{8}$").test(data2.mobile)) {
+                                parent.layer.msg("请输入正确的手机号码！")
+                                return false;
+                            }
+
+                            if (!new RegExp("^[01]{1}$").test(data2.enabled) || checkStr(data2.enabled)) {
+                                parent.layer.msg("只能是1或0")
+                                return false;
+                            }
+
+
+                            if (!new RegExp("^['男女']{1}$").test(data2.sex) || checkStr(data2.sex)) {
+                                parent.layer.msg("只能是男或女")
+                                return false;
+                            }
+
+
+                            if (checkStr(data2.province)) {
+                                parent.layer.msg("省份不能为空")
+                                return false;
+                            }
+
+                            if (checkStr(data2.city)) {
+                                parent.layer.msg("市级单位不能为空")
+                                return false;
+                            }
+
+                            if (checkStr(data2.county)) {
+                                parent.layer.msg("区不能为空")
+                                return false;
+                            }
+
+                            if (checkStr(data2.addr)) {
+                                parent.layer.msg("详细地址不能为空")
+                                return false;
+                            }
+
+                            if (data2.roleList.length === 0) {
+                                parent.layer.msg("请选择角色")
+                                return false;
+                            }
+
+
+                            $.ajax({
+                                url: '/user/addUser',
+                                type: 'post',
+                                dataType: 'json',
+                                contentType: "application/json;charset=utf-8",
+                                data: JSON.stringify(data2),
+                                success: function (req) {
+                                    console.log("addUser", req)
+                                    parent.layer.msg(req.msg);
+
+                                }
+                            });
+
+                        }
+                    });
+
+                    break;
+
+                //自定义头工具栏右侧图标 - 提示
+                case 'INPORT_DATA':
+
+                     break;
+                case 'LAYTABLE_TIPS':
+                    layer.tab({
+                        area: ['600px', '300px'],
+                        tab: [{
+                            title: '用户列表',
+                            content: '1、搜索条件不需要后端做字段校验<br>' +
+                                '2、page、limit两个参数值不能为null<br>' +
+                                '3、初始密码是123456'
+                        }, {
+                            title: '用户添加',
+                            content: '1、form表单全部字段后端需要做数据校验<br>' +
+                                '2、用户角色不能为空<br>' +
+                                ''
+                        }, {
+                            title: '用户编辑',
+                            content: '用用户添加相同' +
+                                ''
+                        }, {
+                            title: '用户删除',
+                            content: '1、先删除用户角色再删除用户信息' +
+                                ''
+                        }, ]
+                    });
+                    break;
+            }
+            ;
+        });
+
+
+        //监听行工具事件
+        table.on('tool(user)', function (obj) {
+            var data = obj.data;
+            console.log("行数据", obj)
+            if (obj.event === 'del') {
+                layer.confirm('真的删除此账号吗？', function (index) {
+                    $.ajax({
+                        url: '/user/delUser/' + data.id,
+                        type: 'delete',
+                        dataType: '',
+                        data: '',
+                        success: function (req) {
+                            console.log("删除用户响应值：", req)
+                            if (req.code === 0) {
+                                layer.close(index);
+                                obj.del();
+                                table.reload('user');
+                                return false;
+                            } else {
+                                layer.close(index);
+                                parent.layer.msg(req.msg);
+                                return false;
+                            }
+                        }
+                    });
+
+                });
+            } else if (obj.event === 'edit') {
+
+                sessionStorage.setItem("userEditData", JSON.stringify(data));
+
+                parent.layer.open({
+                    type: 2, //页面层
+                    title: '用户编辑',
+                    skin: '2', //样式
+                    area: ['90%', '90%'], //宽高
+                    anim: 0, //弹出动画，0-6不同弹窗风格
+                    closeBtn: 1, //0不显示关闭，1、2两种风格
+                    isOutAnim: true, //关闭动画
+                    maxmin: true, //最大化最小化
+                    resize: false, //不允许拉伸
+                    shade: [0.8, '#393d49'], //遮罩,除弹框外的范围的背景颜色且不可点击，0是没有
+                    content: '/adminUserEdit',
+                    move: false, //是否允许拖动
+                    btnAlign: 'l'
+                    , btn: ['保存', '关闭'] //可以无限个按钮
+                    , yes: function (index, layero) {
+
+                        //从子页面传值过来父页面
+                        var iframe = parent.window['layui-layer-iframe' + index];
+                        let data2 = iframe.child2();
+
+                        if (!new RegExp("^[\u4e00-\u9fa5]{2,10}$").test(data2.uname) || checkStr(data2.uname)) {
+                            parent.layer.msg("用户名只能是汉字且只允许2-10个汉字")
+                            return false;
+                        }
+
+                        if (!new RegExp("^[A-Za-z]{2,20}$").test(data2.account) || checkStr(data2.account)) {
+                            parent.layer.msg("登录名只能由英文字母组成且只允许2-20个字母")
+                            return false;
+                        }
+
+                        if (!new RegExp("^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$").test(data2.email)) {
+                            parent.layer.msg("邮箱地址不正确！")
+                            return false;
+                        }
+
+                        if (checkStr(data2.mobile) ||
+                            !new RegExp("^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\\d{8}$").test(data2.mobile)) {
+                            parent.layer.msg("请输入正确的手机号码！")
+                            return false;
+                        }
+
+                        if (!new RegExp("^[01]{1}$").test(data2.enabled) || checkStr(data2.enabled)) {
+                            parent.layer.msg("只能是1或0")
+                            return false;
+                        }
+
+                        if (!new RegExp("^[01]{1}$").test(data2.accountNonLocked) || checkStr(data2.accountNonLocked)) {
+                            parent.layer.msg("只能是1或0")
+                            return false;
+                        }
+
+                        if (!new RegExp("^[01]{1}$").test(data2.accountNonExpired) || checkStr(data2.accountNonExpired)) {
+                            parent.layer.msg("只能是1或0")
+                            return false;
+                        }
+
+                        if (!new RegExp("^[01]{1}$").test(data2.credentialsNonExpired) || checkStr(data2.credentialsNonExpired)) {
+                            parent.layer.msg("只能是1或0")
+                            return false;
+                        }
+
+                        if (!new RegExp("^['男女']{1}$").test(data2.sex) || checkStr(data2.sex)) {
+                            parent.layer.msg("只能是男或女")
+                            return false;
+                        }
+
+                        if (!new RegExp("^['男女']{1}$").test(data2.sex) || checkStr(data2.sex)) {
+                            parent.layer.msg("只能是男或女")
+                            return false;
+                        }
+
+                        if (checkStr(data2.province)) {
+                            parent.layer.msg("省份不能为空")
+                            return false;
+                        }
+
+                        if (checkStr(data2.city)) {
+                            parent.layer.msg("市级单位不能为空")
+                            return false;
+                        }
+
+                        if (checkStr(data2.county)) {
+                            parent.layer.msg("区不能为空")
+                            return false;
+                        }
+
+                        if (checkStr(data2.addr)) {
+                            parent.layer.msg("详细地址不能为空")
+                            return false;
+                        }
+
+
+                        if (data2.roleList.length === 0) {
+                            parent.layer.msg("请选择角色")
+                            return false;
+                        }
+
+
+                        $.ajax({
+                            url: '/user/editUser',
+                            type: 'PUT',
+                            dataType: 'json',
+                            contentType: "application/json;charset=utf-8",
+                            data: JSON.stringify(data2),
+                            success: function (req) {
+                                console.log("userEdit", req)
+                                parent.layer.msg(req.msg);
+                            }
+                        });
+                    }
+                    , btn2: function (index, layero) {
+                        table.reload('user');
+                    },
+                    cancel: function () {
+                        //右上角关闭回调
+                        console.log("右上角关闭回调")
+                        table.reload('user');
+                    }
+                });
+                //账号停用
+            } else if (obj.event === 'stop') {
+                layer.confirm('真的要停用账号吗？', function (index) {
+                    $.ajax({
+                        url: '/user/stopUser/' + data.id,
+                        type: 'put',
+                        dataType: '',
+                        data: '',
+                        success: function (req) {
+                            layer.close(index);
+                            parent.layer.msg(req.msg);
+                            table.reload('user');
+
+                        }
+                    });
+                });
+            } else if (obj.event === 'start') {
+                layer.confirm('真的要启用账号吗？', function (index) {
+                    $.ajax({
+                        url: '/user/startUser/' + data.id,
+                        type: 'put',
+                        dataType: '',
+                        data: '',
+                        success: function (req) {
+                            layer.close(index);
+                            parent.layer.msg(req.msg);
+                            table.reload('user');
+
+                        }
+                    });
+                });
+
+
+                //密码重置
+            } else if (obj.event === 'reset') {
+
+                layer.confirm('真的需要密码重置吗？', function (index) {
+                    $.ajax({
+                        url: '/user/updatePassword/' + data.id,
+                        type: 'put',
+                        dataType: '',
+                        data: '',
+                        success: function (req) {
+                            //关闭窗口
+                            layer.close(index);
+                            parent.layer.msg(req.msg);
+
+                        }
+                    });
+                });
+
+            }
+        });
+
+        //用户搜索条件
+        form.on('submit(userSreach)', function (data) {
+            console.log("用户搜索条件", data.field);
+            table.reload('user', {
+                where: data.field
+            });
+            return false;
+        });
+
+
+    });
+
+
+</script>
+
+</html>

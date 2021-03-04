@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎页面-X-admin2.2</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi"/>
+    <link rel="stylesheet" href="../../static/css/font.css">
+    <link rel="stylesheet" href="../../static/css/xadmin.css">
+    <script src="../../static/lib/layui/layui.js" charset="utf-8"></script>
+<!--    <script type="text/javascript" src="../../static/js/xadmin.js"></script>-->
+    <link rel="stylesheet" href="../../static/lib/layui/css/layui.css">
+
+    <script type="text/javascript" src="../../static/js/vue.js"></script>
+    <script type="text/javascript" src="../../static/js/axios.min.js"></script>
+    <script type="text/javascript" src="../../static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="../../static/lib/layui/mods/layarea.js"></script>
+    <!--[if lt IE 9]>
+    <script rel="stylesheet" src="../static/js/html5.min.js" ></script>
+    <script rel="stylesheet" src="../static/js/respond.min.js" ></script>
+    <![endif]-->
+</head>
+<style>
+
+    .one {
+        width: 47%;
+        height: 480px;
+        /*border: 1px solid #ccc;*/
+        float: left;
+        box-sizing: border-box;
+
+    }
+
+    .two {
+        margin-left: 6%;
+        width: 47%;
+        height: 480px;
+        /*border: 1px solid #ccc;*/
+        float: left;
+        box-sizing: border-box;
+
+    }
+
+</style>
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+
+            <div class="layui-tab layui-tab-card">
+                <ul class="layui-tab-title">
+                    <li >基本信息</li>
+                    <li>菜单分配</li>
+                    <li class="layui-this">权限分配</li>
+                </ul>
+                <div class="layui-tab-content" style="height: 500px;">
+                    <div class="layui-tab-item ">
+                        <form class="layui-form" action="" lay-filter="role1Form">
+
+                            <div class="layui-form-item">
+
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">角色 <font color="red">*</font></label>
+                                    <div class="layui-input-inline">
+
+                                        <input type="tel" name="role" lay-verify="required|role" autocomplete="off"
+                                               class="layui-input">
+                                    </div>
+                                </div>
+
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">角色名称 <font color="red">*</font></label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="roleName" lay-verify="required|roleName" autocomplete="off"
+                                               class="layui-input">
+                                        <input type="hidden" name="id"
+                                               >
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">启用 <font color="red">*</font></label>
+                                <div class="layui-input-block">
+                                    <input type="radio" name="enabled" value="1" title="是" checked>
+                                    <input type="radio" name="enabled" value="0" title="否">
+                                </div>
+                            </div>
+
+
+                            <div class="layui-form-item">
+                                <div class="layui-input-block">
+                                    <button type="submit" class="layui-btn" lay-submit="" lay-filter="role1submit">提交</button>
+                                </div>
+                            </div>
+
+
+                        </form>
+                    </div>
+                    <div class="layui-tab-item">
+                        <div style="height: 500px">
+
+                            <div class="one">
+                                <div id="menu" class="demo-tree demo-tree-box"
+                                     style="width: 300px; height: 500px; overflow: scroll;">
+                                </div>
+
+
+                            </div>
+
+                            <div class="two">
+                                <table class="layui-hide" id="tableMenu" lay-filter="tableMenu"></table>
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <div class="layui-tab-item layui-show">
+                        <div style="height: 480px">
+
+                            <div class="one">
+                                <form class="layui-form layui-col-space5">
+                                    <div class="layui-inline layui-show-xs-block">
+                                        <input class="layui-input" autocomplete="off" placeholder="API" name="rule" >
+                                    </div>
+                                    <div class="layui-inline layui-show-xs-block">
+                                        <input class="layui-input" autocomplete="off" placeholder="API名称" name="ruleName">
+                                    </div>
+
+                                    <div class="layui-inline layui-show-xs-block">
+                                        <button class="layui-btn layui-btn-danger" lay-submit="" lay-filter="sreach1"><i
+                                                class="layui-icon">&#xe615;</i></button>
+                                    </div>
+                                </form>
+
+                                <table class="layui-hide" id="tableMenu1" lay-filter="tableMenu1"></table>
+
+                            </div>
+
+                            <div class="two">
+                                <form class="layui-form layui-col-space5">
+                                    <div class="layui-inline layui-show-xs-block">
+                                        <input class="layui-input" autocomplete="off" placeholder="API" name="rule" >
+                                    </div>
+                                    <div class="layui-inline layui-show-xs-block">
+                                        <input class="layui-input" autocomplete="off" placeholder="API名称" name="ruleName">
+                                    </div>
+
+                                    <div class="layui-inline layui-show-xs-block">
+                                        <button class="layui-btn" lay-submit="" lay-filter="sreach2"><i
+                                                class="layui-icon">&#xe615;</i></button>
+                                    </div>
+                                </form>
+
+                                <table class="layui-hide" id="tableMenu2" lay-filter="tableMenu2"></table>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+</body>
+
+<script type="text/html" id="toolbarDemo1">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-danger" lay-event="delauz">取消授权</button>
+    </div>
+</script>
+
+<script type="text/html" id="toolbarDemo2">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="addauz">授权</button>
+    </div>
+</script>
+<script>
+
+    let dd = sessionStorage.getItem("roleEditData");
+    let editData = JSON.parse(dd);
+    console.log("sessionStorage共享的行数据", editData)
+
+    layui.use(['laydate', 'form', 'table', 'jquery', 'layarea','element','tree'], function () {
+        var laydate = layui.laydate,
+            form = layui.form,
+            tree = layui.tree,
+            table = layui.table,
+            $ = layui.$,
+            element = layui.element,
+            layarea = layui.layarea
+
+        ;
+
+
+        //给表单赋值
+        form.val("role1Form", { //formTest 即 class="layui-form" 所在元素属性 lay-filter="" 对应的值
+            "id": editData.id // "name": "value"
+            ,"role": editData.role // "name": "value"
+            ,"roleName": editData.roleName
+            ,"enabled": editData.enabled
+        });
+
+
+        //添加按钮监听
+        form.on('submit(role1submit)', function (data) {
+            console.log(data.elem) //被执行事件的元素DOM对象，一般为button对象
+            console.log(data.form) //被执行提交的form对象，一般在存在form标签时才会返回
+            console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
+
+            $.ajax({
+                url: '/role/editRole',
+                type: 'put',
+                dataType: 'json',
+                contentType: "application/json;charset=utf-8",
+                data: JSON.stringify(data.field),
+                success: function (req) {
+                    console.log("editUser", req)
+                    layer.msg(req.msg);
+
+                }
+            });
+
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+
+        form.verify({
+            role: function (value, item) { //value：表单的值、item：表单的DOM对象
+                if (!new RegExp("^[A-Za-z1-9]{2,30}$").test(value)) {
+                    return '由英文字母和数字组成';
+                }
+            }
+            , roleName: function (value, item) {
+                if (!new RegExp("^[\u4e00-\u9fa5A-Za-z1-9]{2,30}$").test(value)) {
+                    return '不允许特殊符号';
+                }
+            }
+
+            //我们既支持上述函数式的方式，也支持下述数组的形式
+            //数组的两个值分别代表：[正则匹配、匹配不符时的提示文字]
+            , pass: [
+                /^[\S]{6,12}$/
+                , '密码必须6到12位，且不能出现空格'
+            ]
+        });
+
+
+        //表格渲染
+        table.render({
+            elem: '#tableMenu1'
+            , url: '/role/findRoleApi1/'+editData.id
+            , title: '用户数据表'
+            , toolbar: '#toolbarDemo1' //开启头部工具栏，并为其绑定左侧模板
+            , defaultToolbar: ['filter', 'exports', 'print', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
+                title: '提示'
+                , layEvent: 'LAYTABLE_TIPS'
+                , icon: 'layui-icon-tips'
+            }]
+            , cols: [
+                [
+                    {type: 'radio', width: 100, align: 'center'}
+                    , {field: 'rule', title: 'API'}
+                    , {field: 'ruleName', title: 'API名称'}
+                ]
+            ]
+            , page: true
+            , height: 440
+        });
+
+
+        //表格渲染
+        table.render({
+            elem: '#tableMenu2'
+            , url: '/role/findRoleApi2/'+editData.id
+            , title: '用户数据表'
+            , toolbar: '#toolbarDemo2' //开启头部工具栏，并为其绑定左侧模板
+            , defaultToolbar: ['filter', 'exports', 'print', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
+                title: '提示'
+                , layEvent: 'LAYTABLE_TIPS'
+                , icon: 'layui-icon-tips'
+            }]
+            , cols: [
+                [
+                    {type: 'radio', width: 100, align: 'center'}
+                    , {field: 'rule', title: 'API'}
+                    , {field: 'ruleName', title: 'API名称'}
+                ]
+            ]
+            , page: true
+            , height: 440
+        });
+
+
+        //头工具栏事件
+        table.on('toolbar(tableMenu1)', function (obj) {
+            var checkStatus = table.checkStatus(obj.config.id);
+            switch (obj.event) {
+                case 'delauz':
+                    console.log(obj);
+                    console.log(checkStatus);
+                    $.ajax({
+                        url:'/role/delRoleApi/'+editData.id+"?apiId="+checkStatus.data[0].id,
+                        type: 'DELETE',
+                        success:function (req) {
+                            console.log(req);
+                            layer.msg(req.msg)
+
+                            table.reload('tableMenu1');
+                            table.reload('tableMenu2');
+                        }
+
+                    })
+                    break;
+
+                //自定义头工具栏右侧图标 - 提示
+                case 'LAYTABLE_TIPS':
+                    layer.alert('这是工具栏右侧自定义的一个图标按钮');
+                    break;
+            }
+            ;
+        });
+
+
+        //头工具栏事件
+        table.on('toolbar(tableMenu2)', function (obj) {
+            var checkStatus = table.checkStatus(obj.config.id);
+            switch (obj.event) {
+                case 'addauz':
+                    console.log(obj);
+                    console.log(checkStatus.data[0].id);
+                    $.ajax({
+                        url:'/role/addRoleApi/'+editData.id+"?apiId="+checkStatus.data[0].id,
+                        type: 'POST',
+                        success:function (req) {
+                            console.log(req);
+                            layer.msg(req.msg)
+                            table.reload('tableMenu1');
+                            table.reload('tableMenu2');
+                        }
+
+                    })
+
+                    break;
+
+                //自定义头工具栏右侧图标 - 提示
+                case 'LAYTABLE_TIPS':
+                    layer.alert('这是工具栏右侧自定义的一个图标按钮');
+                    break;
+            }
+            ;
+        });
+
+
+        //搜索
+        form.on('submit(sreach1)', function (data) {
+            console.log(data.field);
+            table.reload('tableMenu1', {
+                where: data.field
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+        //搜索
+        form.on('submit(sreach2)', function (data) {
+            console.log(data.field);
+            table.reload('tableMenu2', {
+                where: data.field
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+
+
+        $.ajax({
+            url: '/role/findRoleMenu/' + editData.id,
+            type: 'get',
+            dataType: 'json',
+            async:true,
+            data: '',
+            success: function (req) {
+                //开启节点操作图标
+                tree.render({
+                    elem: '#menu'
+                    , data: req.data
+                    , showCheckbox: true //复选框
+                    , accordion: true //手风琴风格,只能打开一个菜单
+                    , text: {
+                        defaultNodeName: '新建默认节点' //新建默认节点
+                        , none: '菜单列表为空时的提示信息' //菜单列表为空时的提示信息
+                    },oncheck: function(obj){
+                        console.log(req);
+                        console.log(obj);
+                        if (req.count > 0){
+                            req.count = req.count - 1;
+                            return false;
+                        }
+
+
+                        let data = [];
+                        if (obj.data.children.length === 0){
+                            data.push(obj.data);
+                        }else {
+                            data = obj.data.children;
+                        }
+
+                        console.log(data);
+
+                        $.ajax({
+                            url: '/role/editMenu',
+                            type: 'put',
+                            dataType: 'json',
+                            contentType: "application/json;charset=utf-8",
+                            data: JSON.stringify({"flag":obj.checked,"roleId":editData.id,"menuTreeBeanList":data}),
+                            success: function (req) {
+
+                            }
+                        });
+                    }
+                });
+
+
+            }
+        });
+
+
+
+
+
+    });
+
+
+</script>
+
+</html>
