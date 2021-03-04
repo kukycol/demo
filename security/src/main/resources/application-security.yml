@@ -1,0 +1,6 @@
+
+LoginAttempt:
+  #允许尝试密码5次
+  MAX_ATTEMPT: 5
+  #封禁5分钟
+  minu: 5
